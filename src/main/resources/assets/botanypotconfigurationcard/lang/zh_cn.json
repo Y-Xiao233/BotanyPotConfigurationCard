@@ -1,0 +1,15 @@
+{
+  "itemGroup.botanypotconfigurationcard": "Botany Pot: Configuration Card",
+
+  "message.botanypotconfigurationcard.error": "配置信息错误,请重置后重新尝试",
+  "message.botanypotconfigurationcard.success": "配置成功",
+  "message.botanypotconfigurationcard.miss_seed": "玩家背包缺失对应种子",
+  "message.botanypotconfigurationcard.miss_soil": "玩家背包缺失对应土壤",
+  "message.botanypotconfigurationcard.save": "成功保存配置",
+  "message.botanypotconfigurationcard.null_seed": "植物盆内种子为空",
+  "message.botanypotconfigurationcard.null_soil": "植物盆内土壤为空",
+  "message.botanypotconfigurationcard.reset": "成功清除配置",
+
+  "tooltip.botanypotconfigurationcard.tip0": "* 潜行右键植物盆保存配置",
+  "tooltip.botanypotconfigurationcard.tip1": "* 潜行右键空气重置配置"
+}

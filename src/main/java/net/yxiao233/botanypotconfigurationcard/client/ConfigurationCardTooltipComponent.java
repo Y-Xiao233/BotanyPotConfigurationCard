@@ -1,4 +1,4 @@
-package net.yxiao233.botanypotconfigurationcard;
+package net.yxiao233.botanypotconfigurationcard.client;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;

@@ -1,4 +1,4 @@
-package net.yxiao233.botanypotconfigurationcard;
+package net.yxiao233.botanypotconfigurationcard.common;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.yxiao233.botanypotconfigurationcard.client.ConfigurationCardTooltipComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -60,15 +61,9 @@ public class ConfigurationCardItem extends Item {
 
     @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack stack) {
-        if(stack.getTag() != null && stack.getTag().contains("setting")){
-            CompoundTag setting = stack.getTag().getCompound("setting");
-            ItemStack seed = ItemStack.EMPTY;
-            ItemStack soil = ItemStack.EMPTY;
-            seed.deserializeNBT(setting.getCompound("seed"));
-            soil.deserializeNBT(setting.getCompound("soil"));
-            if(!seed.isEmpty() && !soil.isEmpty()){
-                return Optional.of(new ConfigurationCardTooltipComponent(soil,seed));
-            }
+        PotInfo info = PotInfo.create(stack);
+        if(!info.isEmpty()){
+            return Optional.of(new ConfigurationCardTooltipComponent(info.getSoil(),info.getSeed()));
         }
         return super.getTooltipImage(stack);
     }
@@ -80,16 +75,9 @@ public class ConfigurationCardItem extends Item {
     }
 
     @Override
-    public boolean isFoil(ItemStack stack) {
-        if(stack.getTag() != null && stack.getTag().contains("setting")){
-            CompoundTag setting = stack.getTag().getCompound("setting");
-            ItemStack seed = ItemStack.EMPTY;
-            ItemStack soil = ItemStack.EMPTY;
-            seed.deserializeNBT(setting.getCompound("seed"));
-            soil.deserializeNBT(setting.getCompound("soil"));
-            return !seed.isEmpty() && !soil.isEmpty();
-        }
-        return false;
+    public boolean isFoil(@NotNull ItemStack stack) {
+        PotInfo info = PotInfo.create(stack);
+        return !info.isEmpty();
     }
 
     public static HitResult rayTraceSimple(Level world, LivingEntity living, double blockReachDistance, float partialTicks) {

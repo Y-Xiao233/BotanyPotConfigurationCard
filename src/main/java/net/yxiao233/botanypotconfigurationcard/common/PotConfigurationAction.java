@@ -1,8 +1,7 @@
-package net.yxiao233.botanypotconfigurationcard;
+package net.yxiao233.botanypotconfigurationcard.common;
 
 import net.darkhax.botanypots.block.BlockEntityBotanyPot;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -34,13 +33,9 @@ public class PotConfigurationAction {
             return;
         }
         int messageValue;
-        if(card.getTag() != null && card.getTag().contains("setting")){
-            CompoundTag setting = card.getTag().getCompound("setting");
-            ItemStack seed = ItemStack.EMPTY;
-            ItemStack soil = ItemStack.EMPTY;
-            seed.deserializeNBT(setting.getCompound("seed"));
-            soil.deserializeNBT(setting.getCompound("soil"));
-            messageValue = applySetting(player,seed,soil);
+        PotInfo info = PotInfo.create(card);
+        if(!info.isEmpty()){
+            messageValue = applySetting(player,info);
         }else{
             messageValue = saveSetting();
         }
@@ -48,13 +43,15 @@ public class PotConfigurationAction {
         player.displayClientMessage(message,true);
     }
 
-    private int applySetting(Player player, ItemStack seed, ItemStack soil){
-        if(seed.isEmpty() || soil.isEmpty()){
+    private int applySetting(Player player, PotInfo info){
+        if(info == null || info.isEmpty()){
             return -1;
         }
 
         ItemStack potSeed = getSeedItem();
         ItemStack potSoil = getSoilItem();
+        ItemStack seed = info.getSeed().copy();
+        ItemStack soil = info.getSoil().copy();
         if(potSeed.isEmpty() || !ItemStack.isSameItemSameTags(seed,potSeed)){
             int seedSlot = player.getInventory().findSlotMatchingItem(seed);
             if (seedSlot != -1 || player.isCreative()) {
@@ -96,12 +93,7 @@ public class PotConfigurationAction {
             return 12;
         }
 
-        CompoundTag tag = new CompoundTag();
-        CompoundTag setting = new CompoundTag();
-        setting.put("seed",potSeed.serializeNBT());
-        setting.put("soil",potSoil.serializeNBT());
-        tag.put("setting",setting);
-        this.card.setTag(tag);
+        PotInfo.of(potSeed,potSoil).serializeNBT(card);
         return 10;
     }
 

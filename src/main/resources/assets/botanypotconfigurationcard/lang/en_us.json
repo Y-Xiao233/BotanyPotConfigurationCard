@@ -1,0 +1,15 @@
+{
+  "itemGroup.botanypotconfigurationcard": "Botany Pot: Configuration Card",
+
+  "message.botanypotconfigurationcard.error": "Configuration information error, please reset and try again",
+  "message.botanypotconfigurationcard.success": "Configuration successful",
+  "message.botanypotconfigurationcard.miss_seed": "Missing seed",
+  "message.botanypotconfigurationcard.miss_soil": "Missing soil",
+  "message.botanypotconfigurationcard.save": "Successfully saved configuration",
+  "message.botanypotconfigurationcard.null_seed": "Seed in the pot is null",
+  "message.botanypotconfigurationcard.null_soil": "Soil in the pot is null",
+  "message.botanypotconfigurationcard.reset": "Reset successful",
+
+  "tooltip.botanypotconfigurationcard.tip0": "* SHIFT + Right Click the pot to save configuration",
+  "tooltip.botanypotconfigurationcard.tip1": "* SHIFT + Right Click air to reset configuration"
+}

@@ -1,10 +1,11 @@
-package net.yxiao233.botanypotconfigurationcard;
+package net.yxiao233.botanypotconfigurationcard.client;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.yxiao233.botanypotconfigurationcard.client.ConfigurationCardTooltipComponent;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
