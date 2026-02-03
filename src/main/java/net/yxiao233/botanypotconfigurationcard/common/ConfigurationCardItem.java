@@ -1,7 +1,6 @@
 package net.yxiao233.botanypotconfigurationcard.common;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.yxiao233.botanypotconfigurationcard.BotanyPotConfigurationCard;
 import net.yxiao233.botanypotconfigurationcard.client.ConfigurationCardTooltipComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,8 +50,8 @@ public class ConfigurationCardItem extends Item {
             return InteractionResultHolder.pass(card);
         }
         if(card.getItem() instanceof ConfigurationCardItem && player.isShiftKeyDown()){
-            if(card.getTag() != null && card.getTag().contains("setting")){
-                card.setTag(new CompoundTag());
+            if(card.has(BotanyPotConfigurationCard.POT_INFO)){
+                card.remove(BotanyPotConfigurationCard.POT_INFO);
             }
             player.displayClientMessage(PotConfigurationAction.reset.get(0),true);
             return InteractionResultHolder.success(card);
@@ -61,23 +61,28 @@ public class ConfigurationCardItem extends Item {
 
     @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack stack) {
-        PotInfo info = PotInfo.create(stack);
-        if(!info.isEmpty()){
-            return Optional.of(new ConfigurationCardTooltipComponent(info.getSoil(),info.getSeed()));
+        if(stack.has(BotanyPotConfigurationCard.POT_INFO)){
+            PotInfo potInfo = stack.get(BotanyPotConfigurationCard.POT_INFO);
+            if(potInfo != null && !potInfo.soil().isEmpty() && !potInfo.seed().isEmpty()){
+                return Optional.of(new ConfigurationCardTooltipComponent(potInfo.soil(),potInfo.seed()));
+            }
         }
         return super.getTooltipImage(stack);
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         tooltipComponents.add(Component.translatable("tooltip.botanypotconfigurationcard.tip0").withStyle(ChatFormatting.GRAY));
         tooltipComponents.add(Component.translatable("tooltip.botanypotconfigurationcard.tip1").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
-    public boolean isFoil(@NotNull ItemStack stack) {
-        PotInfo info = PotInfo.create(stack);
-        return !info.isEmpty();
+    public boolean isFoil(ItemStack stack) {
+        if(stack.has(BotanyPotConfigurationCard.POT_INFO)){
+            PotInfo potInfo = stack.get(BotanyPotConfigurationCard.POT_INFO);
+            return potInfo != null && !potInfo.seed().isEmpty() && !potInfo.soil().isEmpty();
+        }
+        return false;
     }
 
     public static HitResult rayTraceSimple(Level world, LivingEntity living, double blockReachDistance, float partialTicks) {

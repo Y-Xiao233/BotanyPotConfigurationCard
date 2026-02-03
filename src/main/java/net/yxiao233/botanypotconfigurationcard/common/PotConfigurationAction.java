@@ -1,12 +1,13 @@
 package net.yxiao233.botanypotconfigurationcard.common;
 
-import net.darkhax.botanypots.block.BlockEntityBotanyPot;
+import net.darkhax.botanypots.common.impl.block.entity.BotanyPotBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.yxiao233.botanypotconfigurationcard.BotanyPotConfigurationCard;
 
 import java.util.HashMap;
 
@@ -15,14 +16,14 @@ public class PotConfigurationAction {
     public static HashMap<Integer, Component> applyOrSave;
     public static HashMap<Integer, Component> reset;
     private final ItemStack card;
-    private final BlockEntityBotanyPot entity;
-    private PotConfigurationAction(ItemStack stack, BlockEntityBotanyPot entity){
+    private final BotanyPotBlockEntity entity;
+    private PotConfigurationAction(ItemStack stack, BotanyPotBlockEntity entity){
         this.card = stack;
         this.entity = entity;
     }
 
     public static PotConfigurationAction create(ItemStack card, BlockEntity blockEntity){
-        if(card.getItem() instanceof ConfigurationCardItem && blockEntity instanceof BlockEntityBotanyPot potBlockEntity){
+        if(card.getItem() instanceof ConfigurationCardItem && blockEntity instanceof BotanyPotBlockEntity potBlockEntity){
             return new PotConfigurationAction(card,potBlockEntity);
         }
         return EMPTY;
@@ -32,30 +33,30 @@ public class PotConfigurationAction {
         if(this == EMPTY || this.entity == null || this.card == null || this.card.isEmpty()){
             return;
         }
+        boolean has = card.has(BotanyPotConfigurationCard.POT_INFO);
         int messageValue;
-        PotInfo info = PotInfo.create(card);
-        if(!info.isEmpty()){
-            messageValue = applySetting(player,info);
+        if(has){
+            messageValue = applySetting(player);
         }else{
-            messageValue = saveSetting();
+            messageValue = getSetting();
         }
         Component message = PotConfigurationAction.applyOrSave.get(messageValue);
         player.displayClientMessage(message,true);
     }
 
-    private int applySetting(Player player, PotInfo info){
-        if(info == null || info.isEmpty()){
+    private int applySetting(Player player){
+        PotInfo potInfo = card.get(BotanyPotConfigurationCard.POT_INFO);
+        if(potInfo == null){
             return -1;
         }
-
-        ItemStack potSeed = getSeedItem();
-        ItemStack potSoil = getSoilItem();
-        ItemStack seed = info.getSeed().copy();
-        ItemStack soil = info.getSoil().copy();
-        if(potSeed.isEmpty() || !ItemStack.isSameItemSameTags(seed,potSeed)){
+        ItemStack potSeed = entity.getSeedItem().copy();
+        ItemStack potSoil = entity.getSoilItem().copy();
+        ItemStack seed = potInfo.seed().copy();
+        ItemStack soil = potInfo.soil().copy();
+        if(potSeed.isEmpty() || !ItemStack.isSameItemSameComponents(potSeed,seed)){
             int seedSlot = player.getInventory().findSlotMatchingItem(seed);
             if (seedSlot != -1 || player.isCreative()) {
-                setSeedItem(seed);
+                entity.setSeed(seed);
                 if(!player.isCreative()){
                     player.getInventory().getItem(seedSlot).shrink(1);
                 }
@@ -66,10 +67,10 @@ public class PotConfigurationAction {
                 ItemHandlerHelper.giveItemToPlayer(player,potSeed);
             }
         }
-        if(potSoil.isEmpty() || !ItemStack.isSameItemSameTags(potSoil,soil)){
+        if(potSoil.isEmpty() || !ItemStack.isSameItemSameComponents(potSoil,soil)){
             int soilSlot = player.getInventory().findSlotMatchingItem(soil);
             if (soilSlot != -1 || player.isCreative()) {
-                setSoilItem(soil);
+                entity.setSoilItem(soil);
                 if(!player.isCreative()){
                     player.getInventory().getItem(soilSlot).shrink(1);
                 }
@@ -83,9 +84,9 @@ public class PotConfigurationAction {
         return 0;
     }
 
-    private int saveSetting(){
-        ItemStack potSeed = getSeedItem();
-        ItemStack potSoil = getSoilItem();
+    private int getSetting(){
+        ItemStack potSeed = entity.getSeedItem().copy();
+        ItemStack potSoil = entity.getSoilItem().copy();
         if(potSeed.isEmpty()){
             return 11;
         }
@@ -93,24 +94,8 @@ public class PotConfigurationAction {
             return 12;
         }
 
-        PotInfo.of(potSeed,potSoil).serializeNBT(card);
+        card.set(BotanyPotConfigurationCard.POT_INFO,PotInfo.of(potSoil,potSeed));
         return 10;
-    }
-
-    private ItemStack getSeedItem(){
-        return entity.getInventory().getCropStack().copy();
-    }
-
-    private ItemStack getSoilItem(){
-        return entity.getInventory().getSoilStack().copy();
-    }
-
-    private void setSeedItem(ItemStack seed){
-        entity.setItem(1,seed.copy());
-    }
-
-    private void setSoilItem(ItemStack soil){
-        entity.setItem(0,soil.copy());
     }
 
 

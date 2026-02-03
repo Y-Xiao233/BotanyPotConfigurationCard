@@ -1,6 +1,8 @@
 {
   "itemGroup.botanypotconfigurationcard": "Botany Pot: Configuration Card",
 
+  "item.botanypotconfigurationcard.configuration_card": "Configuration Card",
+
   "message.botanypotconfigurationcard.error": "Configuration information error, please reset and try again",
   "message.botanypotconfigurationcard.success": "Configuration successful",
   "message.botanypotconfigurationcard.miss_seed": "Missing seed",
