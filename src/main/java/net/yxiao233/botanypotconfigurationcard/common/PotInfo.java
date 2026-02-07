@@ -26,15 +26,19 @@ public class PotInfo{
     }
 
     public void serializeNBT(ItemStack card) {
-        if(isEmpty()){
-            card.setTag(new CompoundTag());
+        CompoundTag tag = card.getTag();
+        CompoundTag t;
+        if(tag != null && card.hasTag()){
+            t = card.getTag().copy();
         }else{
-            CompoundTag tag = new CompoundTag();
+            t = new CompoundTag();
+        }
+        if(!isEmpty()){
             CompoundTag setting = new CompoundTag();
             setting.put("seed",seed.serializeNBT());
             setting.put("soil",soil.serializeNBT());
-            tag.put("setting",setting);
-            card.setTag(tag);
+            t.put("setting",setting);
+            card.setTag(t);
         }
     }
 

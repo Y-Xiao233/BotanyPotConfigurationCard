@@ -52,20 +52,6 @@ public class PotConfigurationAction {
         ItemStack potSoil = getSoilItem();
         ItemStack seed = info.getSeed().copy();
         ItemStack soil = info.getSoil().copy();
-        if(potSeed.isEmpty() || !ItemStack.isSameItemSameTags(seed,potSeed)){
-            int seedSlot = player.getInventory().findSlotMatchingItem(seed);
-            if (seedSlot != -1 || player.isCreative()) {
-                setSeedItem(seed);
-                if(!player.isCreative()){
-                    player.getInventory().getItem(seedSlot).shrink(1);
-                }
-            }else{
-                return 1;
-            }
-            if(!potSeed.isEmpty()){
-                ItemHandlerHelper.giveItemToPlayer(player,potSeed);
-            }
-        }
         if(potSoil.isEmpty() || !ItemStack.isSameItemSameTags(potSoil,soil)){
             int soilSlot = player.getInventory().findSlotMatchingItem(soil);
             if (soilSlot != -1 || player.isCreative()) {
@@ -78,6 +64,20 @@ public class PotConfigurationAction {
             }
             if(!potSoil.isEmpty()){
                 ItemHandlerHelper.giveItemToPlayer(player,potSoil);
+            }
+        }
+        if(potSeed.isEmpty() || !ItemStack.isSameItemSameTags(seed,potSeed)){
+            int seedSlot = player.getInventory().findSlotMatchingItem(seed);
+            if (seedSlot != -1 || player.isCreative()) {
+                setSeedItem(seed);
+                if(!player.isCreative()){
+                    player.getInventory().getItem(seedSlot).shrink(1);
+                }
+            }else{
+                return 1;
+            }
+            if(!potSeed.isEmpty()){
+                ItemHandlerHelper.giveItemToPlayer(player,potSeed);
             }
         }
         return 0;
