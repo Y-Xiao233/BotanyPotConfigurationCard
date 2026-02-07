@@ -1,6 +1,8 @@
 {
   "itemGroup.botanypotconfigurationcard": "Botany Pot: Configuration Card",
 
+  "item.botanypotconfigurationcard.configuration_card": "配置卡",
+
   "message.botanypotconfigurationcard.error": "配置信息错误,请重置后重新尝试",
   "message.botanypotconfigurationcard.success": "配置成功",
   "message.botanypotconfigurationcard.miss_seed": "玩家背包缺失对应种子",
