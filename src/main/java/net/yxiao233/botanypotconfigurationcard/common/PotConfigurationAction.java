@@ -38,7 +38,7 @@ public class PotConfigurationAction {
         if(has){
             messageValue = applySetting(player);
         }else{
-            messageValue = getSetting();
+            messageValue = saveSetting();
         }
         Component message = PotConfigurationAction.applyOrSave.get(messageValue);
         player.displayClientMessage(message,true);
@@ -53,20 +53,6 @@ public class PotConfigurationAction {
         ItemStack potSoil = entity.getSoilItem().copy();
         ItemStack seed = potInfo.seed().copy();
         ItemStack soil = potInfo.soil().copy();
-        if(potSeed.isEmpty() || !ItemStack.isSameItemSameComponents(potSeed,seed)){
-            int seedSlot = player.getInventory().findSlotMatchingItem(seed);
-            if (seedSlot != -1 || player.isCreative()) {
-                entity.setSeed(seed);
-                if(!player.isCreative()){
-                    player.getInventory().getItem(seedSlot).shrink(1);
-                }
-            }else{
-                return 1;
-            }
-            if(!potSeed.isEmpty()){
-                ItemHandlerHelper.giveItemToPlayer(player,potSeed);
-            }
-        }
         if(potSoil.isEmpty() || !ItemStack.isSameItemSameComponents(potSoil,soil)){
             int soilSlot = player.getInventory().findSlotMatchingItem(soil);
             if (soilSlot != -1 || player.isCreative()) {
@@ -81,10 +67,24 @@ public class PotConfigurationAction {
                 ItemHandlerHelper.giveItemToPlayer(player,potSoil);
             }
         }
+        if(potSeed.isEmpty() || !ItemStack.isSameItemSameComponents(potSeed,seed)){
+            int seedSlot = player.getInventory().findSlotMatchingItem(seed);
+            if (seedSlot != -1 || player.isCreative()) {
+                entity.setSeed(seed);
+                if(!player.isCreative()){
+                    player.getInventory().getItem(seedSlot).shrink(1);
+                }
+            }else{
+                return 1;
+            }
+            if(!potSeed.isEmpty()){
+                ItemHandlerHelper.giveItemToPlayer(player,potSeed);
+            }
+        }
         return 0;
     }
 
-    private int getSetting(){
+    private int saveSetting(){
         ItemStack potSeed = entity.getSeedItem().copy();
         ItemStack potSoil = entity.getSoilItem().copy();
         if(potSeed.isEmpty()){
